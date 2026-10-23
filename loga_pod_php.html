@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>PHP Ekosystém – Grid log pro ilustrátora</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f4f4f6;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 220px);
+      gap: 24px;
+      background: #ffffff;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    .card {
+      border: 2px solid #ececf1;
+      border-radius: 12px;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .card img, .card svg {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      margin-bottom: 16px;
+    }
+    .name {
+      font-weight: 700;
+      font-size: 16px;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+    .hex {
+      font-family: monospace;
+      font-size: 13px;
+      color: #666;
+      background: #f0f0f4;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid">
+    <div class="card">
+      <img src="https://cdn.simpleicons.org/php/777BB4" alt="PHP">
+      <div class="name">PHP (Základ)</div>
+      <div class="hex">#777BB4</div>
+    </div>
+
+    <div class="card">
+      <img src="https://cdn.simpleicons.org/wordpress/21759B" alt="WordPress">
+      <div class="name">WordPress</div>
+      <div class="hex">#21759B</div>
+    </div>
+
+    <div class="card">
+      <img src="https://cdn.simpleicons.org/woocommerce/96588A" alt="WooCommerce">
+      <div class="name">WooCommerce</div>
+      <div class="hex">#96588A</div>
+    </div>
+
+    <div class="card">
+      <img src="https://cdn.simpleicons.org/prestashop/DF0067" alt="PrestaShop">
+      <div class="name">PrestaShop</div>
+      <div class="hex">#DF0067</div>
+    </div>
+
+    <div class="card">
+      <!-- Vložené vektorové SVG pro Magento -->
+      <svg viewBox="0 0 24 24" fill="#EE672F" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 24l-4.455-2.572v-12l2.97-1.714v12.001l1.485.857 1.485-.857V7.714l2.97 1.714v12L12 24zM22.391 6v12l-2.969 1.714V7.714L12 3.428 4.578 7.714v12L1.609 18V6L12 0l10.391 6z"/>
+      </svg>
+      <div class="name">Magento</div>
+      <div class="hex">#EE672F</div>
+    </div>
+
+    <div class="card">
+      <img src="https://cdn.simpleicons.org/drupal/0678BE" alt="Drupal">
+      <div class="name">Drupal</div>
+      <div class="hex">#0678BE</div>
+    </div>
+
+    <div class="card">
+      <img src="https://cdn.simpleicons.org/joomla/5091CD" alt="Joomla">
+      <div class="name">Joomla</div>
+      <div class="hex">#5091CD</div>
+    </div>
+
+    <div class="card">
+      <img src="https://cdn.simpleicons.org/wikipedia/000000" alt="Wikipedia">
+      <div class="name">Wikipedie</div>
+      <div class="hex">#000000</div>
+    </div>
+
+    <div class="card">
+      <img src="https://cdn.simpleicons.org/laravel/FF2D20" alt="Laravel">
+      <div class="name">Laravel</div>
+      <div class="hex">#FF2D20</div>
+    </div>
+  </div>
+
+</body>
+</html>
