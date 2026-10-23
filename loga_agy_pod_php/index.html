@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kritické PHP systémy – Grid log pro ilustrátora | Agilní výběr</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0c0f17;
+      --card-bg: rgba(22, 27, 39, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #f0f2f8;
+      --text-muted: #8c96a8;
+      --accent: #777BB4;
+      --accent-glow: rgba(119, 123, 180, 0.25);
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #171d2f 0%, #0c0f17 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 48px 24px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    header {
+      margin-bottom: 36px;
+      text-align: center;
+    }
+
+    .badge-alert {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 16px;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-alert::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 10px #ef4444;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ffffff 30%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 780px;
+      margin: 0 auto 24px;
+      line-height: 1.6;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      padding: 12px 18px;
+      border-radius: 14px;
+      margin-bottom: 32px;
+      backdrop-filter: blur(12px);
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .filter-btn.active {
+      color: #fff;
+      background: rgba(119, 123, 180, 0.25);
+      border-color: rgba(119, 123, 180, 0.5);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: #a5b4fc;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--brand-color, #777BB4);
+      opacity: 0.8;
+      transition: height 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.5), 0 0 20px -5px var(--brand-glow, rgba(119, 123, 180, 0.2));
+    }
+
+    .card:hover::before {
+      height: 4px;
+    }
+
+    .logo-box {
+      width: 88px;
+      height: 88px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      padding: 16px;
+      transition: transform 0.25s ease, background 0.25s ease;
+    }
+
+    .card:hover .logo-box {
+      transform: scale(1.05);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .logo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+    }
+
+    .name {
+      font-weight: 700;
+      font-size: 17px;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .impact-tag {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+      line-height: 1.4;
+      min-height: 22px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      justify-content: center;
+      margin-top: auto;
+    }
+
+    .hex-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #d1d5db;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .hex-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .color-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--brand-color);
+      display: inline-block;
+      box-shadow: 0 0 6px var(--brand-color);
+    }
+
+    .icon-link {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      border-radius: 8px;
+      padding: 6px 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .icon-link:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Toast notification */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 10px 20px;
+      border-radius: 9999px;
+      font-size: 13.5px;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    footer {
+      margin-top: 48px;
+      text-align: center;
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    footer a {
+      color: #94a3b8;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    footer a:hover {
+      color: #cbd5e1;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 24px 14px 60px;
+      }
+      h1 {
+        font-size: 24px;
+      }
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+      .card {
+        padding: 18px 12px 14px;
+      }
+      .logo-box {
+        width: 68px;
+        height: 68px;
+        padding: 12px;
+      }
+      .impact-tag {
+        font-size: 10.5px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="badge-alert">Reakce na říjnovou vlnu PHP RCE útoků (php2shell)</div>
+      <h1>Kritické PHP projekty: Ohrožení & dopad</h1>
+      <p class="subtitle">
+        Proč vlády v ČR, SR, Německu, Francii a Finsku preventivně odstavovaly své systémy? 
+        PHP nepohání jen běžné blogy, ale páteřní státní cloudová úložiště, univerzitní LMS, enterprise weby ministerstev a serverovou infrastrukturu.
+      </p>
+
+      <div class="toolbar">
+        <div class="filters">
+          <button class="filter-btn active" data-filter="all">Všechny (12)</button>
+          <button class="filter-btn" data-filter="gov">Vlády & Veřejná sféra</button>
+          <button class="filter-btn" data-filter="infra">Infrastruktura & Hosting</button>
+          <button class="filter-btn" data-filter="web">Web & Enterprise</button>
+        </div>
+
+        <div class="nav-links">
+          <a class="nav-link" href="loga_pod_php.html">← Původní 9-grid (CMS & e-shopy)</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid" id="cardsGrid">
+      
+      <!-- 1. Nextcloud -->
+      <div class="card" data-category="gov" style="--brand-color: #0082C9; --brand-glow: rgba(0, 130, 201, 0.3);">
+        <div class="logo-box">
+          <img src="https://cdn.simpleicons.org/nextcloud/0082C9" alt="Nextcloud">
+        </div>
+        <div class="name">Nextcloud</div>
+        <div class="impact-tag">Vládní cloudy & úložiště dokumentů</div>
+        <div class="meta-row">
+          <button class="hex-btn" onclick="copyHex('#0082C9', 'Nextcloud')">
+            <span class="color-dot"></span>#0082C9
+          </button>
+          <a class="icon-link" href="https://cdn.simpleicons.org/nextcloud/0082C9" target="_blank" title="Otevřít SVG">SVG</a>
+        </div>
+      </div>
+
+      <!-- 2. TYPO3 -->
+      <div class="card" data-category="gov" style="--brand-color: #FF8700; --brand-glow: rgba(255, 135, 0, 0.3);">
+        <div class="logo-box">
+          <img src="https://cdn.simpleicons.org/typo3/FF8700" alt="TYPO3">
+        </div>
+        <div class="name">TYPO3</div>
+        <div class="impact-tag">Vládní portály a ministerstva v DACH</div>
+        <div class="meta-row">
+          <button class="hex-btn" onclick="copyHex('#FF8700', 'TYPO3')">
+            <span class="color-dot"></span>#FF8700
+          </button>
+          <a class="icon-link" href="https://cdn.simpleicons.org/typo3/FF8700" target="_blank" title="Otevřít SVG">SVG</a>
+        </div>
+      </div>
+
+      <!-- 3. Moodle -->
+      <div class="card" data-category="gov" style="--brand-color: #F98012; --brand-glow: rgba(249, 128, 18, 0.3);">
+        <div class="logo-box">
+          <img src="https://cdn.simpleicons.org/moodle/F98012" alt="Moodle">
+        </div>
+        <div class="name">Moodle</div>
+        <div class="impact-tag">Univerzity a národní školství v EU</div>
+        <div class="meta-row">
+          <button class="hex-btn" onclick="copyHex('#F98012', 'Moodle')">
+            <span class="color-dot"></span>#F98012
+          </button>
+          <a class="icon-link" href="https://cdn.simpleicons.org/moodle/F98012" target="_blank" title="Otevřít SVG">SVG</a>
+        </div>
+      </div>
+
+      <!-- 4. Symfony -->
+      <div class="card" data-category="web" style="--brand-color: #A5B4FC; --brand-glow: rgba(165, 180, 252, 0.25);">
+        <div class="logo-box">
+          <img src="https://cdn.simpleicons.org/symfony/FFFFFF" alt="Symfony">
+        </div>
+        <div class="name">Symfony</div>
+        <div class="impact-tag">Páteřní enterprise a státní backendy</div>
+        <div class="meta-row">
+          <button class="hex-btn" onclick="copyHex('#000000', 'Symfony')">
+            <span class="color-dot" style="background:#fff; box-shadow: 0 0 6px #fff;"></span>#000000
+          </button>
+          <a class="icon-link" href="https://cdn.simpleicons.org/symfony/FFFFFF" target="_blank" title="Otevřít SVG">SVG</a>
+        </div>
+      </div>
+
+      <!-- 5. Roundcube -->
+      <div class="card" data-category="infra" style="--brand-color: #37BEFF; --brand-glow: rgba(55, 190, 255, 0.3);">
+        <div class="logo-box">
+          <img src="https://cdn.simpleicons.org/roundcube/37BEFF" alt="Roundcube Webmail">
+        </div>
+        <div class="name">Roundcube</div>
+        <div class="impact-tag">Vládní, akademický & ISP webmail</div>
+        <div class="meta-row">
+          <button class="hex-btn" onclick="copyHex('#37BEFF', 'Roundcube')">
+            <span class="color-dot"></span>#37BEFF
+          </button>
+          <a class="icon-link" href="https://cdn.simpleicons.org/roundcube/37BEFF" target="_blank" title="Otevřít SVG">SVG</a>
+        </div>
+      </div>
+
+      <!-- 6. Matomo -->
+      <div class="card" data-category="gov" style="--brand-color: #3152A0; --brand-glow: rgba(49, 82, 160, 0.3);">
+        <div class="logo-box">
+          <img src="https://cdn.simpleicons.org/matomo/3152A0" alt="Matomo Analytics">
+        </div>
+        <div class="name">Matomo</div>
+        <div class="impact-tag">Oficiální webová analytika EU institucí</div>
+        <div class="meta-row">
+          <button class="hex-btn" onclick="copyHex('#3152A0', 'Matomo')">
+            <span class="color-dot"></span>#3152A0
+          </button>
+          <a class="icon-link" href="https://cdn.simpleicons.org/matomo/3152A0" target="_blank" title="Otevřít SVG">SVG</a>
+        </div>
+      </div>
+
+      <!-- 7. phpMyAdmin -->
+      <div class="card" data-category="infra" style="--brand-color: #6C78AF; --brand-glow: rgba(108, 120, 175, 0.3);">
+        <div class="logo-box">
+          <img src="https://cdn.simpleicons.org/phpmyadmin/6C78AF" alt="phpMyAdmin">
+        </div>
+        <div class="name">phpMyAdmin</div>
+        <div class="impact-tag">Správa SQL databází na milionech serverů</div>
+        <div class="meta-row">
+          <button class="hex-btn" onclick="copyHex('#6C78AF', 'phpMyAdmin')">
+            <span class="color-dot"></span>#6C78AF
+          </button>
+          <a class="icon-link" href="https://cdn.simpleicons.org/phpmyadmin/6C78AF" target="_blank" title="Otevřít SVG">SVG</a>
+        </div>
+      </div>
+
+      <!-- 8. cPanel -->
+      <div class="card" data-category="infra" style="--brand-color: #FF6C2C; --brand-glow: rgba(255, 108, 44, 0.3);">
+        <div class="logo-box">
+          <img src="https://cdn.simpleicons.org/cpanel/FF6C2C" alt="cPanel">
+        </div>
+        <div class="name">cPanel</div>
+        <div class="impact-tag">Hostingový a serverový operační panel</div>
+        <div class="meta-row">
+          <button class="hex-btn" onclick="copyHex('#FF6C2C', 'cPanel')">
+            <span class="color-dot"></span>#FF6C2C
+          </button>
+          <a class="icon-link" href="https://cdn.simpleicons.org/cpanel/FF6C2C" target="_blank" title="Otevřít SVG">SVG</a>
+        </div>
+      </div>
+
+      <!-- 9. Plesk -->
+      <div class="card" data-category="infra" style="--brand-color: #52B0E7; --brand-glow: rgba(82, 176, 231, 0.3);">
+        <div class="logo-box">
+          <img src="https://cdn.simpleicons.org/plesk/52B0E7" alt="Plesk">
+        </div>
+        <div class="name">Plesk</div>
+        <div class="impact-tag">Správa webových nodů & cloud serverů</div>
+        <div class="meta-row">
+          <button class="hex-btn" onclick="copyHex('#52B0E7', 'Plesk')">
+            <span class="color-dot"></span>#52B0E7
+          </button>
+          <a class="icon-link" href="https://cdn.simpleicons.org/plesk/52B0E7" target="_blank" title="Otevřít SVG">SVG</a>
+        </div>
+      </div>
+
+      <!-- 10. Drupal -->
+      <div class="card" data-category="gov" style="--brand-color: #0678BE; --brand-glow: rgba(6, 120, 190, 0.3);">
+        <div class="logo-box">
+          <img src="https://cdn.simpleicons.org/drupal/0678BE" alt="Drupal">
+        </div>
+        <div class="name">Drupal</div>
+        <div class="impact-tag">Oficiální CMS vlád a státních agentur</div>
+        <div class="meta-row">
+          <button class="hex-btn" onclick="copyHex('#0678BE', 'Drupal')">
+            <span class="color-dot"></span>#0678BE
+          </button>
+          <a class="icon-link" href="https://cdn.simpleicons.org/drupal/0678BE" target="_blank" title="Otevřít SVG">SVG</a>
+        </div>
+      </div>
+
+      <!-- 11. Shopware -->
+      <div class="card" data-category="web" style="--brand-color: #189EFF; --brand-glow: rgba(24, 158, 255, 0.3);">
+        <div class="logo-box">
+          <img src="https://cdn.simpleicons.org/shopware/189EFF" alt="Shopware">
+        </div>
+        <div class="name">Shopware</div>
+        <div class="impact-tag">Evropský enterprise e-commerce lídr</div>
+        <div class="meta-row">
+          <button class="hex-btn" onclick="copyHex('#189EFF', 'Shopware')">
+            <span class="color-dot"></span>#189EFF
+          </button>
+          <a class="icon-link" href="https://cdn.simpleicons.org/shopware/189EFF" target="_blank" title="Otevřít SVG">SVG</a>
+        </div>
+      </div>
+
+      <!-- 12. WordPress -->
+      <div class="card" data-category="web" style="--brand-color: #21759B; --brand-glow: rgba(33, 117, 155, 0.3);">
+        <div class="logo-box">
+          <img src="https://cdn.simpleicons.org/wordpress/21759B" alt="WordPress">
+        </div>
+        <div class="name">WordPress</div>
+        <div class="impact-tag">40%+ globálního webu a médií</div>
+        <div class="meta-row">
+          <button class="hex-btn" onclick="copyHex('#21759B', 'WordPress')">
+            <span class="color-dot"></span>#21759B
+          </button>
+          <a class="icon-link" href="https://cdn.simpleicons.org/wordpress/21759B" target="_blank" title="Otevřít SVG">SVG</a>
+        </div>
+      </div>
+
+    </div>
+
+    <footer>
+      Připraveno jako podklad a barevná reference pro ilustrátora / grafika k bezpečnostní zprávě o dopadu zranitelností PHP.<br>
+      Související článek: <a href="https://www.startitup.sk/kriticke-chyby-odstavuju-weby-napriec-europou-hackeri-sa-ich-uz-snazia-zneuzit" target="_blank" rel="noopener">Startitup – Kritické chyby v PHP odstavujú weby naprieč Európou</a>
+    </footer>
+  </div>
+
+  <div id="toast">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toastMsg">HEX barva zkopírována</span>
+  </div>
+
+  <script>
+    // Copy HEX to clipboard
+    function copyHex(hex, name) {
+      navigator.clipboard.writeText(hex).then(() => {
+        showToast(`Zkopírován HEX kód ${hex} (${name})`);
+      }).catch(() => {
+        showToast(`${hex}`);
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2200);
+    }
+
+    // Category filtering
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.dataset.filter;
+        cards.forEach(card => {
+          if (filter === 'all' || card.dataset.category === filter) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
