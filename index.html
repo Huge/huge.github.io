@@ -1,1 +1,122 @@
-about me: https://linktr.ee/uhuge
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Huge (@uhuge) – striving to improve communication</title>
+  <meta name="description" content="Martin Vlach (Huge, @uhuge): code, security tooling such as BudgetScan, and places to find me online.">
+  <meta name="color-scheme" content="light dark">
+  <meta property="og:title" content="Huge (@uhuge)">
+  <meta property="og:description" content="Striving to improve communication. Code, BudgetScan, and where to find me online.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://huge.github.io/">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://huge.github.io/">
+  <style>
+    :root {
+      --bg: #fafaf8;
+      --fg: #1c1c1a;
+      --muted: #66665f;
+      --card: #ffffff;
+      --border: #dcdcd4;
+      --accent: #0b6e4f;
+      --accent-fg: #ffffff;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #14161a;
+        --fg: #e8e8e3;
+        --muted: #9a9a92;
+        --card: #1d2026;
+        --border: #2f333b;
+        --accent: #4cc38a;
+        --accent-fg: #0c1a13;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    main { max-width: 640px; margin: 0 auto; padding: 48px 16px 64px; }
+    h1 { margin: 0; font-size: 1.9rem; line-height: 1.2; }
+    h1 small { font-weight: 400; color: var(--muted); }
+    .tagline { margin: 4px 0 0; color: var(--muted); }
+    h2 {
+      margin: 40px 0 12px;
+      font-size: .8rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+    a.link {
+      display: block;
+      padding: 12px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: inherit;
+      text-decoration: none;
+    }
+    a.link:hover { border-color: var(--accent); }
+    a.link:focus-visible { border-color: var(--accent); outline: 2px solid var(--accent); outline-offset: 2px; }
+    a.link strong { display: block; }
+    a.link span { color: var(--muted); font-size: .92rem; }
+    .feature {
+      margin-top: 32px;
+      padding: 20px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: var(--accent-fg);
+    }
+    .feature .kicker { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; }
+    .feature h2 { margin: 2px 0 8px; font-size: 1.25rem; letter-spacing: 0; text-transform: none; color: inherit; }
+    .feature h2 a { color: inherit; }
+    .feature h2 a:focus-visible { outline: 2px solid var(--accent-fg); outline-offset: 2px; }
+    .feature p { margin: 0; }
+    .feature code { font: .9em ui-monospace, SFMono-Regular, Menlo, monospace; background: rgba(0,0,0,.15); padding: 1px 6px; border-radius: 4px; }
+    footer { margin-top: 48px; color: var(--muted); font-size: .9rem; }
+    footer a { color: inherit; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Martin Vlach <small>· Huge · @uhuge</small></h1>
+      <p class="tagline">Striving to improve communication.</p>
+    </header>
+
+    <section class="feature">
+      <span class="kicker">Newest project · cyber-defense</span>
+      <h2><a href="https://bs.ehlas.cz">BudgetScan <span aria-hidden="true">→</span> bs.ehlas.cz</a></h2>
+      <p>In development: budget-capped AI security scans for PRs and MRs. The open-source scanner (nano-analyzer) runs from the command line or your own CI today and has led to fixes merged upstream in tmux, ProFTPD, KDE Connect, mise and others. A comment command such as <code>@budgetscan $0.50 --max-delay 5m</code> and pay-per-scan credits are coming next. Early access on request.</p>
+    </section>
+
+    <h2>Meeting people online</h2>
+    <ul>
+      <li><a class="link" href="https://www.linkedin.com/in/uhuge/" rel="me noopener"><strong>LinkedIn</strong><span>Work chat, co-ops</span></a></li>
+      <li><a class="link" href="https://fb.com/uhuge" rel="me noopener"><strong>Facebook</strong><span>Personal and IRL talks/events</span></a></li>
+      <li><a class="link" href="https://www.lesswrong.com/users/martin-vlach" rel="me noopener"><strong>LessWrong</strong><span>Online discussions with rationalists</span></a></li>
+      <li><a class="link" href="https://www.efektivni-altruismus.cz/en" rel="noopener"><strong>Effective Altruism Czechia</strong><span>Aiming for a huge positive impact with the local, lovely Effective Altruism folks</span></a></li>
+    </ul>
+
+    <h2>Open software code</h2>
+    <ul>
+      <li><a class="link" href="https://github.com/huge" rel="me noopener"><strong>GitHub</strong><span>The oldest of my git hosting accounts; most of the things are private though</span></a></li>
+      <li><a class="link" href="https://gitlab.com/huge1" rel="me noopener"><strong>GitLab</strong><span>My main GitLab profile</span></a></li>
+      <li><a class="link" href="https://stackexchange.com/users/98434/huge" rel="me noopener"><strong>Stack Overflow / Stack Exchange</strong><span>Q&amp;A and software-building tangling</span></a></li>
+      <li><a class="link" href="https://benefy.cz/" rel="noopener"><strong>Benefy</strong><span>Currently building; proprietary code, but open to talk about it</span></a></li>
+    </ul>
+
+    <h2>Tips</h2>
+    <ul>
+      <li><a class="link" href="https://buymeacoffee.com/uhuge" rel="noopener"><strong>Buy me a coffee</strong><span>Tip € with a card or what</span></a></li>
+    </ul>
+
+    <footer>More in one place: <a href="https://linktr.ee/uhuge" rel="me noopener">linktr.ee/uhuge</a></footer>
+  </main>
+</body>
+</html>
